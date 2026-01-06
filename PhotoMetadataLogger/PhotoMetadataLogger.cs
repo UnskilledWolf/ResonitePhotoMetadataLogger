@@ -48,7 +48,7 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly UserSummary LocationHost = new(photo.LocationHost);
 		public readonly string LocationAccessLevel = photo.LocationAccessLevel.ToString();
 		public readonly bool LocationHiddenFromListing = photo.LocationHiddenFromListing.Value ?? false;
-		public readonly long TimeTaken = new DateTimeOffset(photo.TimeTaken.Value).ToUnixTimeSeconds();
+		public readonly DateTime TimeTaken = photo.TimeTaken.Value;
 		public readonly UserSummary TakenBy = new(photo.TakenBy);
 		public readonly float[] TakenGlobalPosition = FlattenFloat3(photo.TakenGlobalPosition.Value);
 		public readonly float[] TakenGlobalRotation = FlattenFloat3(photo.TakenGlobalRotation.Value.EulerAngles);
@@ -72,7 +72,7 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly bool IsPresent = userInfo.IsPresent;
 		public readonly float[] HeadPosition = FlattenFloat3(userInfo.HeadPosition.Value);
 		public readonly float[] HeadOrientation = FlattenFloat3(userInfo.HeadOrientation.Value.EulerAngles);
-		public readonly float SessionJoinTimestamp = new DateTimeOffset(userInfo.SessionJoinTimestamp).ToUnixTimeSeconds();
+		public readonly DateTime SessionJoinTimestamp = userInfo.SessionJoinTimestamp;
 	}
 
 	public class UserSummary(UserRef user) {

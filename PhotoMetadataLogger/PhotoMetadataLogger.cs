@@ -29,11 +29,13 @@ public class PhotoMetadataLogger : ResoniteMod {
 			Msg("Exporting photo summary.");
 
 			PhotoMetadataSummary summary = new(__instance);
+
 			var options = new JsonSerializerOptions {
 				IncludeFields = true,
 			};
 			string jsonString = JsonSerializer.Serialize(summary, options);
-			File.AppendAllText(@"/home/axiom/Pictures/Resonite.jsonl", jsonString + Environment.NewLine);
+			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Resonite.jsonl");
+			File.AppendAllText(path, jsonString + Environment.NewLine);
 		}
 	}
 
@@ -55,6 +57,10 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly float[] TakenGlobalScale = FlattenFloat3(photo.TakenGlobalScale.Value);
 		public readonly string AppVersion = photo.AppVersion.Value;
 		public readonly WorldUserSummary[] UserInfos = ProcessUserInfos(photo.UserInfos);
+
+		// Predict filename based on the time the photo was taken
+		// TODO still figure out a way to get the correct extension
+		public readonly string filename = photo.TimeTaken.Value.ToString("yyyy-MM-dd HH.mm.ss") + ".jpg";
 	}
 
 	public static float[] FlattenFloat3(float3 input) {

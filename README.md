@@ -9,10 +9,9 @@ The log (will be) kept at `~/Photos/Resonite.jsonl`
 
 ## TODO
 
-- Add configurations
-  - Make the output path not hard coded
-- Figure out a way to link metadata entries to image files
 - See if the code can be improved/cleaned up
+- Better determine what file extension will be used to save the image
+- Add configurations
 
 ## Installation
 

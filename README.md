@@ -1,13 +1,18 @@
 # Resonite Photo Metadata Logger
 
-A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that does something.
+> [!WARNING]
+> This mod is WIP and is not fully working yet.
 
-<!-- Edit to describe what your mod does and what it may solve -->
-<!-- If your mod solves an issue, you should link to any relevant issues on the resonite github -->
+A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that exports photo metadata when a screenshot is exported.
 
-## Screenshots
+The log (will be) kept at `~/Photos/Resonite.jsonl`
 
-<!-- If your mod has visible effects in the game, attach some images or video of it in-use here! Otherwise remove this section -->
+## TODO
+
+- Add configurations
+  - Make the output path not hard coded
+- Figure out a way to link metadata entries to image files
+- See if the code can be improved/cleaned up
 
 ## Installation
 

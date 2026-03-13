@@ -11,7 +11,7 @@ using System.Text.Json;
 namespace PhotoMetadataLogger;
 //More info on creating mods can be found https://github.com/resonite-modding-group/ResoniteModLoader/wiki/Creating-Mods
 public class PhotoMetadataLogger : ResoniteMod {
-	internal const string VERSION_CONSTANT = "1.0.0"; //Changing the version here updates it in all locations needed
+	internal const string VERSION_CONSTANT = "1.0.1"; //Changing the version here updates it in all locations needed
 	public override string Name => "Resonite Photo Metadata Logger";
 	public override string Author => "AxiomWolf";
 	public override string Version => VERSION_CONSTANT;
@@ -28,14 +28,23 @@ public class PhotoMetadataLogger : ResoniteMod {
 		static void Postfix(PhotoMetadata __instance) {
 			Msg("Exporting photo summary.");
 
-			PhotoMetadataSummary summary = new(__instance);
+			try {
+				PhotoMetadataSummary summary = new(__instance);
 
-			var options = new JsonSerializerOptions {
-				IncludeFields = true,
-			};
-			string jsonString = JsonSerializer.Serialize(summary, options);
-			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Resonite.jsonl");
-			File.AppendAllText(path, jsonString + Environment.NewLine);
+				var options = new JsonSerializerOptions {
+					IncludeFields = true,
+				};
+				string jsonString = JsonSerializer.Serialize(summary, options);
+
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Resonite.jsonl");
+				File.AppendAllText(path, jsonString + Environment.NewLine);
+			} catch (System.NullReferenceException e) {
+				Error("Failed to save metadata!");
+				Error(e.ToString());
+				if (e.StackTrace != null)
+					Error(e.StackTrace);
+			}
+
 		}
 	}
 
@@ -53,18 +62,23 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly DateTime TimeTaken = photo.TimeTaken.Value;
 		public readonly UserSummary TakenBy = new(photo.TakenBy);
 		public readonly float[] TakenGlobalPosition = FlattenFloat3(photo.TakenGlobalPosition.Value);
-		public readonly float[] TakenGlobalRotation = FlattenFloat3(photo.TakenGlobalRotation.Value.EulerAngles);
+		public readonly float[] TakenGlobalRotation = FlattenFloatQ(photo.TakenGlobalRotation.Value);
 		public readonly float[] TakenGlobalScale = FlattenFloat3(photo.TakenGlobalScale.Value);
 		public readonly string AppVersion = photo.AppVersion.Value;
 		public readonly WorldUserSummary[] UserInfos = ProcessUserInfos(photo.UserInfos);
 
 		// Predict filename based on the time the photo was taken
 		// TODO still figure out a way to get the correct extension
-		public readonly string filename = photo.TimeTaken.Value.ToString("yyyy-MM-dd HH.mm.ss") + ".jpg";
+		public readonly string filename = photo.TimeTaken.Value.ToLocalTime().ToString("yyyy-MM-dd HH.mm.ss") + ".jpg";
 	}
 
 	public static float[] FlattenFloat3(float3 input) {
 		return [input[0], input[1], input[2]];
+	}
+
+	public static float[] FlattenFloatQ(floatQ input) {
+		float4 f = (float4)input;
+		return [input[0], input[1], input[2], input[3]];
 	}
 
 	public static WorldUserSummary[] ProcessUserInfos(SyncList<AssetMetadata.UserInfo> usersList) {
@@ -77,12 +91,12 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly bool IsInVR = userInfo.IsInVR;
 		public readonly bool IsPresent = userInfo.IsPresent;
 		public readonly float[] HeadPosition = FlattenFloat3(userInfo.HeadPosition.Value);
-		public readonly float[] HeadOrientation = FlattenFloat3(userInfo.HeadOrientation.Value.EulerAngles);
+		public readonly float[] HeadOrientation = FlattenFloatQ(userInfo.HeadOrientation.Value);
 		public readonly DateTime SessionJoinTimestamp = userInfo.SessionJoinTimestamp;
 	}
 
 	public class UserSummary(UserRef user) {
-		public readonly string Username = user.User != null ? user.Target.UserName : "";
+		public readonly string Username = (user.Target != null && user.Target.UserName != null) ? user.Target.UserName : "";
 		public readonly string UserId = user.LinkedCloudId;
 	}
 }

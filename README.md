@@ -1,7 +1,7 @@
 # Resonite Photo Metadata Logger
 
-> [!WARNING]
-> This mod is WIP and is not fully working yet.
+> [!NOTE]
+> This mod hasn't been well tested on varying setups.
 
 A [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader) mod for [Resonite](https://resonite.com/) that exports photo metadata when a screenshot is exported.
 

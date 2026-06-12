@@ -11,11 +11,11 @@ using System.Text.Json;
 namespace PhotoMetadataLogger;
 //More info on creating mods can be found https://github.com/resonite-modding-group/ResoniteModLoader/wiki/Creating-Mods
 public class PhotoMetadataLogger : ResoniteMod {
-	internal const string VERSION_CONSTANT = "1.0.1"; //Changing the version here updates it in all locations needed
+	internal const string VERSION_CONSTANT = "1.0.2"; //Changing the version here updates it in all locations needed
 	public override string Name => "Resonite Photo Metadata Logger";
 	public override string Author => "AxiomWolf";
 	public override string Version => VERSION_CONSTANT;
-	public override string Link => "https://github.com/resonite-modding-group/ExampleMod/";
+	public override string Link => "https://github.com/UnskilledWolf/ResonitePhotoMetadataLogger";
 
 	public override void OnEngineInit() {
 		Harmony harmony = new("dev.axiomwolf.PhotoMetadataLogger");
@@ -65,6 +65,7 @@ public class PhotoMetadataLogger : ResoniteMod {
 		public readonly float[] TakenGlobalRotation = FlattenFloatQ(photo.TakenGlobalRotation.Value);
 		public readonly float[] TakenGlobalScale = FlattenFloat3(photo.TakenGlobalScale.Value);
 		public readonly string AppVersion = photo.AppVersion.Value;
+		public readonly string RendererName = photo.RendererName.Value ?? "";
 		public readonly WorldUserSummary[] UserInfos = ProcessUserInfos(photo.UserInfos);
 
 		// Predict filename based on the time the photo was taken
@@ -77,7 +78,6 @@ public class PhotoMetadataLogger : ResoniteMod {
 	}
 
 	public static float[] FlattenFloatQ(floatQ input) {
-		float4 f = (float4)input;
 		return [input[0], input[1], input[2], input[3]];
 	}
 
